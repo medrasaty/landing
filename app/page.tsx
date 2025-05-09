@@ -1,12 +1,12 @@
-import Link from "next/link"
-import { Github } from "lucide-react"
-import AbstractPixelArt from "@/components/abstract-pixel-art"
+import Link from "next/link";
+import { Github } from "lucide-react";
+import AbstractPixelArt from "@/components/abstract-pixel-art";
 
 export default function LandingPage() {
   // Calculate date 2 months from now
-  const currentDate = new Date()
-  const launchDate = new Date(currentDate)
-  launchDate.setMonth(currentDate.getMonth() + 2)
+  const currentDate = new Date();
+  const launchDate = new Date(currentDate);
+  launchDate.setMonth(currentDate.getMonth() + 1);
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-black text-white font-mono">
@@ -36,20 +36,30 @@ export default function LandingPage() {
           <AbstractPixelArt />
 
           <div className="space-y-8">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter">Coming Soon</h1>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter">
+              Coming Soon
+            </h1>
 
             {/* Digital Watch Style Countdown */}
             <div className="flex flex-col items-center space-y-4">
-              <div className="text-sm text-gray-400 uppercase tracking-widest">Launching In</div>
+              <div className="text-sm text-gray-400 uppercase tracking-widest">
+                Launching In
+              </div>
 
               <div className="bg-black border-2 border-[#7FE7E7] rounded-lg p-4 sm:p-6 inline-block shadow-[0_0_15px_rgba(127,231,231,0.3)]">
                 <div className="flex items-center justify-center space-x-2 sm:space-x-3">
                   <DigitalTimeUnit value="60" label="DAYS" />
-                  <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">:</div>
+                  <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">
+                    :
+                  </div>
                   <DigitalTimeUnit value="00" label="HRS" />
-                  <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">:</div>
+                  <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">
+                    :
+                  </div>
                   <DigitalTimeUnit value="00" label="MIN" />
-                  <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">:</div>
+                  <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">
+                    :
+                  </div>
                   <DigitalTimeUnit value="00" label="SEC" />
                 </div>
               </div>
@@ -65,14 +75,17 @@ export default function LandingPage() {
       <footer className="container mx-auto py-6 px-4 text-center text-xs text-gray-600">
         <p>
           © {new Date().getFullYear()}{" "}
-          <Link href="https://medrasaty.tech" className="hover:text-[#7FE7E7] transition-colors">
+          <Link
+            href="https://medrasaty.tech"
+            className="hover:text-[#7FE7E7] transition-colors"
+          >
             medrasaty.tech
           </Link>
           . All rights reserved.
         </p>
       </footer>
     </div>
-  )
+  );
 }
 
 function DigitalTimeUnit({ value, label }: { value: string; label: string }) {
@@ -83,7 +96,9 @@ function DigitalTimeUnit({ value, label }: { value: string; label: string }) {
           {value}
         </span>
       </div>
-      <span className="text-xs sm:text-sm mt-1 text-[#7FE7E7]/70 font-bold tracking-wider">{label}</span>
+      <span className="text-xs sm:text-sm mt-1 text-[#7FE7E7]/70 font-bold tracking-wider">
+        {label}
+      </span>
     </div>
-  )
+  );
 }
