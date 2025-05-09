@@ -1,53 +1,81 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { LAUNCH_DATE } from "@/lib/constants"
 
-interface CountdownTimerProps {
-  launchDate: Date
-}
-
-export default function CountdownTimer({ launchDate }: CountdownTimerProps) {
-  const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(launchDate))
+export default function CountdownTimer() {
+  const [timeLeft, setTimeLeft] = useState({
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+  })
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTimeRemaining(getTimeRemaining(launchDate))
-    }, 1000)
+    const calculateTimeLeft = () => {
+      const difference = LAUNCH_DATE.getTime() - new Date().getTime()
 
-    return () => clearInterval(intervalId)
-  }, [launchDate])
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
+        const minutes = Math.floor((difference / 1000 / 60) % 60)
+        const seconds = Math.floor((difference / 1000) % 60)
 
-  const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24))
-  const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-  const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60))
-  const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000)
+        setTimeLeft({
+          days: days.toString().padStart(2, "0"),
+          hours: hours.toString().padStart(2, "0"),
+          minutes: minutes.toString().padStart(2, "0"),
+          seconds: seconds.toString().padStart(2, "0"),
+        })
+      } else {
+        // If launch date has passed
+        setTimeLeft({
+          days: "00",
+          hours: "00",
+          minutes: "00",
+          seconds: "00",
+        })
+      }
+    }
+
+    // Calculate immediately
+    calculateTimeLeft()
+
+    // Then set up interval
+    const timer = setInterval(calculateTimeLeft, 1000)
+
+    // Clean up interval on unmount
+    return () => clearInterval(timer)
+  }, []) // Empty dependency array since we're using the constant LAUNCH_DATE
 
   return (
     <div className="flex flex-col items-center space-y-4">
       <div className="text-sm text-gray-400 uppercase tracking-widest">Launching In</div>
-      <div className="grid grid-cols-4 gap-2 sm:gap-4">
-        <TimeUnit value={String(days).padStart(2, "0")} label="Days" />
-        <TimeUnit value={String(hours).padStart(2, "0")} label="Hours" />
-        <TimeUnit value={String(minutes).padStart(2, "0")} label="Minutes" />
-        <TimeUnit value={String(seconds).padStart(2, "0")} label="Seconds" />
+
+      <div className="bg-black border-2 border-[#7FE7E7] rounded-lg p-4 sm:p-6 inline-block shadow-[0_0_15px_rgba(127,231,231,0.3)]">
+        <div className="flex items-center justify-center space-x-2 sm:space-x-3">
+          <DigitalTimeUnit value={timeLeft.days} label="DAYS" />
+          <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">:</div>
+          <DigitalTimeUnit value={timeLeft.hours} label="HRS" />
+          <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">:</div>
+          <DigitalTimeUnit value={timeLeft.minutes} label="MIN" />
+          <div className="text-[#7FE7E7] text-2xl sm:text-4xl font-bold animate-pulse">:</div>
+          <DigitalTimeUnit value={timeLeft.seconds} label="SEC" />
+        </div>
       </div>
     </div>
   )
 }
 
-function getTimeRemaining(launchDate: Date): number {
-  const now = new Date().getTime()
-  const launchTime = launchDate.getTime()
-  return launchTime - now > 0 ? launchTime - now : 0
-}
-
-function TimeUnit({ value, label }: { value: string; label: string }) {
+function DigitalTimeUnit({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="w-14 sm:w-16 h-14 sm:h-16 flex items-center justify-center bg-gray-900 border border-[#7FE7E7]/20 rounded-md">
-        <span className="text-xl sm:text-2xl font-mono text-[#7FE7E7]">{value}</span>
+      <div className="bg-gray-900 px-2 sm:px-3 py-1 sm:py-2 rounded-md font-mono">
+        <span className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#7FE7E7] tracking-wider digital-font">
+          {value}
+        </span>
       </div>
-      <span className="text-xs mt-1 text-gray-500">{label}</span>
+      <span className="text-xs sm:text-sm mt-1 text-[#7FE7E7]/70 font-bold tracking-wider">{label}</span>
     </div>
   )
 }
